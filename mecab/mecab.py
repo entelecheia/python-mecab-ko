@@ -1,7 +1,6 @@
 import _mecab
 from collections import namedtuple
 
-
 Feature = namedtuple('Feature', [
     'pos',
     'semantic',
@@ -21,7 +20,10 @@ def _create_lattice(sentence):
 
     return lattice
 
-
+# ('합니다',
+#   Feature(pos='XSA+EF', semantic=None, has_jongseong=False, reading='합니다', type='Inflect', 
+#           start_pos='XSA', end_pos='EF', 
+#           expression='하/XSA/*+ᄇ니다/EF/*')),
 def _extract_feature(node):
     # Reference:
     # - http://taku910.github.io/mecab/learn.html
@@ -57,18 +59,33 @@ class MeCab:  # APIs are inspried by KoNLPy
             for node in lattice
         ]
 
-    def pos(self, sentence):
+    def pos(self, sentence, flatten=True, join=False):
+        if flatten:
+            return [
+                surface + '/' + feature.pos 
+                if join else (surface, feature.pos) 
+                for surface, feature in self.parse(sentence)
+            ]
+        else:
+            res = []
+            for surface, feature in self.parse(sentence):
+                if feature.expression is None:
+                    res.append((surface, feature.pos))
+                else:
+                    for elem in feature.expression.split('+'):
+                        s = elem.split('/')
+                        res.append((s[0], s[1]))
+            return [s[0] + '/' + s[1] if join else s for s in res]
+            
+    def morphs(self, sentence, flatten=True):
         return [
-            (surface, feature.pos) for surface, feature in self.parse(sentence)
+            surface 
+            for surface, _ in self.pos(sentence, flatten=flatten, join=False)
         ]
 
-    def morphs(self, sentence):
+    def nouns(self, sentence, flatten=True):
         return [
-            surface for surface, _ in self.parse(sentence)
-        ]
-
-    def nouns(self, sentence):
-        return [
-            surface for surface, feature in self.parse(sentence)
-            if feature.pos.startswith('N')
+            surface 
+            for surface, pos in self.pos(sentence, flatten=flatten, join=False)
+            if pos.startswith('N')
         ]
