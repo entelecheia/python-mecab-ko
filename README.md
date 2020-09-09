@@ -5,49 +5,39 @@ A python binding for mecab-ko
 - python3-dev
 
 ## Installation
-Using `pip`:
+Using `source`:
 ```
-# Use the -v option to check the progress of MeCab installation
-pip install -v python-mecab-ko
+$ git clone git@github.com:entelecheia/python-mecab-ko.git
+
+$ cd python-mecab-ko
+
+$ pip install .
 ```
 
 ## Usage
 ```python
 import mecab
-mecab = mecab.MeCab()
+print(mecab.__version__)
+m = mecab.MeCab()
 
-mecab.morphs('영등포구청역에 있는 맛집 좀 알려주세요.')
-# ['영등포구청역', '에', '있', '는', '맛집', '좀', '알려', '주', '세요', '.']
+text = '한편 통화정책의 완화기조 유지가 불가피한 상황에서 시중유동성이 생산적인 부문으로 유입되어 실물경제의 회복을 보다 효과적으로 뒷받침하기 위해서는 정부와 감독당국의 역할도 매우 긴요하다는 의견임.'
+m.morphs(text)
+# ['한편', '통화', '정책', '의', '완화', '기조', '유지', '가', '불가피', '한', '상황', '에서', '시중', '유동', '성', '이', '생산', '적', '인', '부문', '으로', '유입', '되', '어', '실물', '경제', '의', '회복', '을', '보다', '효과', '적', '으로', '뒷받침', '하', '기', '위해서', '는', '정부', '와', '감독', '당국', '의', '역할', '도', '매우', '긴요', '하', '다는', '의견', '임', '.']
+m.morphs(text, flatten=False)
+# ['한', '편', '통화', '정책', '의', '완화', '기조', '유지', '가', '불가피', '하', 'ᆫ', '상황', '에서', '시중', '유동', '성', '이', '생산', '적', '이', 'ᆫ', '부문', '으로', '유입', '되', '어', '실물', '경제', '의', '회복', '을', '보다', '효과', '적', '으로', '뒷', '받침', '하', '기', '위하', '아서', '는', '정부', '와', '감독', '당국', '의', '역할', '도', '매우', '긴요', '하', '다는', '의견', '이', 'ᄆ', '.']
+text = '한편 일부 위원은 이번 회의에서 기준금리를 현 수준인 0.50%로 동결하는 것이 바람직하다는 견해를 제시하였음.'
+m.nouns(text)
+# ['한편', '일부', '위원', '이번', '회의', '기준', '금리', '수준', '동결', '것', '견해', '제시']
+m.nouns(text, flatten=False)
+# ['한', '편', '일부', '위원', '이', '번', '회의', '기준', '금리', '수준', '동결', '것', '견해', '제시']
 
-mecab.nouns('우리나라에는 무릎 치료를 잘하는 정형외과가 없는가!')
-# ['우리', '나라', '무릎', '치료', '정형외과']
-
-mecab.pos('자연주의 쇼핑몰은 어떤 곳인가?')
-# [('자연주의', 'NNG'), ('쇼핑몰', 'NNG'), ('은', 'JX'), ('어떤', 'MM'), ('곳', 'NNG'), ('인가', 'VCP+EF'), ('?', 'SF')]
-
-mecab.parse('즐거운 하루 보내세요!')
-# [
-#     ('즐거운', Feature(
-#         pos='VA+ETM', semantic=None, has_jongseong=True, reading='즐거운',
-#         type='Inflect', start_pos='VA', end_pos='ETM',
-#         expression='즐겁/VA/*+ᆫ/ETM/*')),
-#     ('하루', Feature(
-#         pos='NNG', semantic=None, has_jongseong=False, reading='하루',
-#         type=None, start_pos=None, end_pos=None,
-#         expression=None)),
-#     ('보내', Feature(
-#         pos='VV', semantic=None, has_jongseong=False, reading='보내',
-#         type=None, start_pos=None, end_pos=None,
-#         expression=None)),
-#     ('세요', Feature(
-#         pos='EP+EF', semantic=None, has_jongseong=False, reading='세요',
-#         type='Inflect', start_pos='EP', end_pos='EF',
-#         expression='시/EP/*+어요/EF/*')),
-#     ('!', Feature(
-#         pos='SF', semantic=None, has_jongseong=None, reading=None,
-#         type=None, start_pos=None, end_pos=None,
-#         expression=None))
-# ]
+text = '신종 코로나바이러스 감염증(코로나19) 사태가 심각합니다.'
+m.pos(text)
+# [('신종', 'NNP'), ('코로나', 'NNP'), ('바이러스', 'NNG'), ('감염증', 'NNG'), ('(', 'SSO'), ('코로나', 'NNP'), ('19', 'SN'), (')', 'SSC'), ('사태', 'NNG'), ('가', 'JKS'), ('심각', 'XR'), ('합니다', 'XSA+EF'), ('.', 'SF')]
+m.pos(text, flatten=False)
+# [('신종', 'NNP'), ('코로나', 'NNP'), ('바이러스', 'NNG'), ('감염', 'NNG'), ('증', 'NNG'), ('(', 'SSO'), ('코로나', 'NNP'), ('19', 'SN'), (')', 'SSC'), ('사태', 'NNG'), ('가', 'JKS'), ('심각', 'XR'), ('하', 'XSA'), ('ᄇ니다', 'EF'), ('.', 'SF')]
+m.pos(text, join=True)
+# '신종/NNP', '코로나/NNP', '바이러스/NNG', '감염증/NNG', '(/SSO', '코로나/NNP', '19/SN', ')/SSC', '사태/NNG', '가/JKS', '심각/XR', '합니다/XSA+EF', './SF']
 ```
 
 ## Acknowledgments
