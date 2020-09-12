@@ -1,4 +1,6 @@
 import _mecab
+import sys
+from pathlib import Path
 from collections import namedtuple
 
 Feature = namedtuple('Feature', [
@@ -46,8 +48,21 @@ class MeCabError(Exception):
 
 
 class MeCab:  # APIs are inspried by KoNLPy
-    def __init__(self):
-        self.tagger = _mecab.Tagger('')
+    def __init__(self, dic_path=None):
+        if dic_path is None:
+            dic_path = Path(sys.executable).parents[1]/'lib/mecab/dic/mecab-ko-dic'
+            if not dic_path.is_dir():
+                dic_path = Path('/usr/local/lib/mecab/dic/mecab-ko-dic')            
+        self.dic_path = Path(dic_path)
+        
+        try:
+            self.tagger = _mecab.Tagger('-d %s' % self.dic_path)
+        except RuntimeError:
+            raise Exception('The MeCab dictionary does not exist at "%s". Is the dictionary correctly installed?\nYou can also try entering the dictionary path when initializing the Mecab class: "Mecab(\'/some/dic/path\')"' % self.dic_path)
+        except NameError:
+            raise Exception('Check if MeCab is installed correctlly.')
+        self.dictionary_info = self.tagger.dictionary_info()
+        self.dic_filename = self.dictionary_info.filename
 
     def parse(self, sentence):
         lattice = _create_lattice(sentence)

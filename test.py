@@ -17,3 +17,6 @@ print(m.pos(text))
 print(m.pos(text, join=True))
 print(m.pos(text, flatten=False))
 # %%
+print(m.dic_path)
+print(m.dic_filename)
+# %%
