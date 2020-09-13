@@ -19,9 +19,14 @@ print(m.pos(text, flatten=False))
 # %%
 print(m.dic_path)
 print(m.dic_filename)
+
+# %%
+from mecab.config import MeCabConfig
+mcc =  MeCabConfig()
+# mcc.install_kodic()
+
 # %%
 text = '까까까비는 세종시에 살고 있다.'
 # text = '사람은 서울에 살고 있다.'
 print(m.morphs(text))
-
 # %%

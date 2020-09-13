@@ -125,7 +125,7 @@ with open('README.md', 'r', encoding='utf-8') as input_file:
 
 setup(
     name='python-mecab-ko',
-    version='1.0.9.4',
+    version='1.0.9.5',
     url='https://github.com/entelecheia/python-mecab-ko',
     author='Young Joon Lee (originally by Jonghwan Hyeon)',
     author_email='yj.lee@yonsei.ac.kr (hyeon0145@gmail.com)',

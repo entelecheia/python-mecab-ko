@@ -122,7 +122,7 @@ class MeCabConfig:
         if userdic_path:
             self.load_userdic(userdic_path)
         else:
-            self.userdic = None
+            self.userdic = []
 
     def load_userdic(self, userdic_path):
         userdic_path = Path(userdic_path)
@@ -150,6 +150,8 @@ class MeCabConfig:
         if self.userdic:
             df = pd.DataFrame(self.userdic)
             df.to_csv(save_path, header=False, index=False)
+            self.userdic_path = save_path
+            print('Saved the userdic to {}'.format(save_path))
         else:
             print('No userdic to save...')
                
@@ -201,7 +203,7 @@ class MeCabConfig:
                 configure('--prefix={}'.format(sys.prefix),
                             '--with-charset=utf8',
                             '--with-mecab-config={}'.format(mecab_config_path))
-                if self.userdic:
+                if userdic_path:
                     save_path = path_of('nnp.csv')/'nnp.csv'
                     for f in save_path.parent.glob('*.csv'):
                         f.unlink()
