@@ -125,10 +125,10 @@ with open('README.md', 'r', encoding='utf-8') as input_file:
 
 setup(
     name='python-mecab-ko',
-    version='1.0.9.3',
-    url='https://github.com/jonghwanhyeon/python-mecab-ko',
-    author='Jonghwan Hyeon',
-    author_email='hyeon0145@gmail.com',
+    version='1.0.9.4',
+    url='https://github.com/entelecheia/python-mecab-ko',
+    author='Young Joon Lee (originally by Jonghwan Hyeon)',
+    author_email='yj.lee@yonsei.ac.kr (hyeon0145@gmail.com)',
     description='A python binding for mecab-ko',
     long_description=long_description,
     long_description_content_type='text/markdown',
