@@ -122,19 +122,20 @@ class MeCabConfig:
         if userdic_path:
             self.load_userdic(userdic_path)
         else:
-            self.userdic = []
+            self.userdic = {}
 
     def load_userdic(self, userdic_path):
         userdic_path = Path(userdic_path)
 
         if userdic_path.is_dir():
-            self.userdic = []
+            self.userdic = {}
             for f in userdic_path.glob('*.csv'):
                 df = pd.read_csv(f, names=DicEntry._fields)
-                self.userdic += [e for e in iternamedtuples(df)]        
+                dic = {e.surface: e for e in iternamedtuples(df)}
+                self.userdic = {**self.userdic, **dic}
         else:
             df = pd.read_csv(userdic_path, names=DicEntry._fields)
-            self.userdic = [e for e in iternamedtuples(df)]
+            self.userdic = {e.surface: e for e in iternamedtuples(df)}
         print(' No. of user dictionary entires loaded: %d' % len(self.userdic))
         
     def add_entry_to_userdic(self, surface, pos='NNP', 
@@ -144,11 +145,11 @@ class MeCabConfig:
                          semantic=semantic, 
                          has_jongseong={True: 'T', False: 'F'}.get(has_jongseong(surface)),
                          reading=surface if reading is None else reading)
-        self.userdic.append(entry)
+        self.userdic[surface] = entry
     
     def save_userdic(self, save_path):
-        if self.userdic:
-            df = pd.DataFrame(self.userdic)
+        if len(self.userdic) > 0:
+            df = pd.DataFrame(self.userdic.values())
             df.to_csv(save_path, header=False, index=False)
             self.userdic_path = save_path
             print('Saved the userdic to {}'.format(save_path))
